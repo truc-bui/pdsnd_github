@@ -20,17 +20,33 @@ VALIDATORS_MESSAGE = {
 TRIP_DURATION_ASTYPE = 'timedelta64[m]'
 TRIP_DURATION_TIME_UNIT = 'mins'
 PAGE_SIZE = 5
+MONTH_FORMAT = '%B'
+DAY_OF_WEEK_FORMAT = '%A'
+
+# Prompts:
+INPUT_CITY_PROMPT = "Would you like to see data for Chicago, New York, or Washington? Please enter 'Chicago' or 'New York' or 'Washington': "
+FILTER_BY_PROMPT = "Would you like to filter the data by month, day, or not at all? Please enter 'month' or 'day' or 'not at all' or any other character(s) for no filter: "
+MONTH_INPUT_PROMPT = 'Which month - January, February, March, April, May, or June? '
+DAY_INPUT_PROMPT = 'Which day - Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, or Sunday? '
+RESTART_PROMPT = '\nWould you like to restart? Enter yes or no.\n'
+DISPLAY_RAW_DATA_PROMPT = f"Would you like to see {PAGE_SIZE} lines of raw data? Enter 'yes' or 'no': "
+DISPLAY_MORE_RAW_DATA_PROMPT = "Would you like to see more raw data? Enter 'yes' or 'no': "
+
+# Options:
+FILTER_BY_MONTH_OPTION = 'month'
+FILTER_BY_DAY_OPTION = 'day'
+YES_OPTION = 'yes'
 
 def convert_month(month):
     try:
-        converted_month = time.strptime(month, '%B').tm_mon
+        converted_month = time.strptime(month, MONTH_FORMAT).tm_mon
         return converted_month
     except:
         return ''
 
 def convert_day_of_week(day):
     try:
-        converted_day_of_week = time.strptime(day, '%A').tm_wday
+        converted_day_of_week = time.strptime(day, DAY_OF_WEEK_FORMAT).tm_wday
         return converted_day_of_week
     except:
         return ''
@@ -68,6 +84,23 @@ def print_most_popular_value_by_column(df, column_name, print_context):
         if DEBUG:
             traceback.print_exc(file=sys.stdout)
 
+def getFileNameByCity(city):
+    try:
+        filename = CITY_DATA.get(city.lower())
+        return filename
+    except:
+        if DEBUG:
+            traceback.print_exc(file=sys.stdout)
+        return False
+
+def getCsvData(filename):
+    try:
+        return pd.read_csv(filename)
+    except:
+        if DEBUG:
+            traceback.print_exc(file=sys.stdout)
+        return None
+
 def get_filters():
     """
     Asks user to specify a city, month, and day to analyze.
@@ -88,27 +121,23 @@ def get_filters():
     while not done:
         if not city:
             # get user input for city (chicago, new york city, washington).
-            city = input(
-            "Would you like to see data for Chicago, New York, or Washington? Please enter 'Chicago' or 'New York' or 'Washington': ")
+            city = input(INPUT_CITY_PROMPT)
         
         is_valid_input = is_valid_city(city)
         if is_valid_input:
             if not filter_by:
-                filter_by = input(
-                    "Would you like to filter the data by month, day, or not at all? Please enter 'month' or 'day' or 'not at all' or any other character(s) for no filter: ")
+                filter_by = input(FILTER_BY_PROMPT)
             
-            if filter_by == 'month':
+            if filter_by == FILTER_BY_MONTH_OPTION:
                 # get user input for month (all, january, february, ... , june)
-                month = input(
-                    'Which month - January, February, March, April, May, or June? ')
+                month = input(MONTH_INPUT_PROMPT)
                 day = ''
                 is_valid_input = is_valid_month(month)
                 if not is_valid_input:
                     print(VALIDATORS_MESSAGE.get('INVALID_MONTH'))
-            elif filter_by == 'day':
+            elif filter_by == FILTER_BY_DAY_OPTION:
                 # get user input for day of week (all, monday, tuesday, ... sunday)
-                day = input(
-                    'Which day - Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, or Sunday? ')
+                day = input(DAY_INPUT_PROMPT)
                 month = ''
                 is_valid_input = is_valid_day_of_week(day)
                 if not is_valid_input:
@@ -144,10 +173,10 @@ def load_data(city, month, day):
     """
     df = ''
     try:
-        filename = CITY_DATA.get(city.lower())
+        filename = getFileNameByCity(city)
         if filename:
             # load data file into a dataframe
-            df = pd.read_csv(filename)
+            df = getCsvData(filename)
             # convert the Start Time column to datetime
             if is_column_valid(df, 'Start Time'):
                 df['Start Time'] = pd.to_datetime(df['Start Time'])
@@ -260,15 +289,15 @@ def handle_display_raw_data(df):
         is_continue = True
         start = 0
         end = PAGE_SIZE
-        prompt = f"Would you like to see {PAGE_SIZE} lines of raw data? Enter 'yes' or 'no': "
+        prompt = DISPLAY_RAW_DATA_PROMPT
         while is_continue:
             display_raw_data = input(prompt)
             
-            if display_raw_data == 'yes':
+            if display_raw_data == YES_OPTION:
                 print(df.iloc[start:end, :])
                 start = end
                 end = start + PAGE_SIZE
-                prompt =  "Would you like to see more raw data? Enter 'yes' or 'not': "
+                prompt = DISPLAY_MORE_RAW_DATA_PROMPT
             else:
                 is_continue = False
     except:
@@ -296,8 +325,8 @@ def main():
                     user_stats(df)
                     handle_display_raw_data(df)
 
-            restart = input('\nWould you like to restart? Enter yes or no.\n')
-            if restart.lower() != 'yes':
+            restart = input(RESTART_PROMPT)
+            if restart.lower() != YES_OPTION:
                 break
     except:
         if DEBUG:
