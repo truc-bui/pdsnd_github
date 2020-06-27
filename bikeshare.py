@@ -10,7 +10,7 @@ CITY_DATA = {
     'washington': 'washington.csv'
 }
 VALID_CITY = ['Chicago', 'New York', 'Washington']
-# DEBUG can be changed to display error tracestack
+# DEBUG flag can be changed to display error tracestack
 DEBUG = False
 VALIDATORS_MESSAGE = {
     'INVALID_CITY': 'Please enter a valid city name.',
