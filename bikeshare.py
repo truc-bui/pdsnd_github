@@ -23,6 +23,12 @@ PAGE_SIZE = 5
 MONTH_FORMAT = '%B'
 DAY_OF_WEEK_FORMAT = '%A'
 
+# Prompts:
+INPUT_CITY_PROMPT = "Would you like to see data for Chicago, New York, or Washington? Please enter 'Chicago' or 'New York' or 'Washington': "
+FILTER_BY_PROMPT = "Would you like to filter the data by month, day, or not at all? Please enter 'month' or 'day' or 'not at all' or any other character(s) for no filter: "
+MONTH_INPUT_PROMPT = 'Which month - January, February, March, April, May, or June? '
+DAY_INPUT_PROMPT = 'Which day - Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, or Sunday? '
+
 def convert_month(month):
     try:
         converted_month = time.strptime(month, MONTH_FORMAT).tm_mon
@@ -90,27 +96,23 @@ def get_filters():
     while not done:
         if not city:
             # get user input for city (chicago, new york city, washington).
-            city = input(
-            "Would you like to see data for Chicago, New York, or Washington? Please enter 'Chicago' or 'New York' or 'Washington': ")
+            city = input(INPUT_CITY_PROMPT)
         
         is_valid_input = is_valid_city(city)
         if is_valid_input:
             if not filter_by:
-                filter_by = input(
-                    "Would you like to filter the data by month, day, or not at all? Please enter 'month' or 'day' or 'not at all' or any other character(s) for no filter: ")
+                filter_by = input(FILTER_BY_PROMPT)
             
             if filter_by == 'month':
                 # get user input for month (all, january, february, ... , june)
-                month = input(
-                    'Which month - January, February, March, April, May, or June? ')
+                month = input(MONTH_INPUT_PROMPT)
                 day = ''
                 is_valid_input = is_valid_month(month)
                 if not is_valid_input:
                     print(VALIDATORS_MESSAGE.get('INVALID_MONTH'))
             elif filter_by == 'day':
                 # get user input for day of week (all, monday, tuesday, ... sunday)
-                day = input(
-                    'Which day - Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, or Sunday? ')
+                day = input(DAY_INPUT_PROMPT)
                 month = ''
                 is_valid_input = is_valid_day_of_week(day)
                 if not is_valid_input:
