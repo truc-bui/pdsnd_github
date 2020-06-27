@@ -5,7 +5,7 @@ Friday, June 26th, 2020
 Github Playground
 
 ### Description
-This is a playground with github
+This is a playground with github. User can clone/fork this repository to play around with git commands.
 
 ### Files used
 - bikeshare.py
