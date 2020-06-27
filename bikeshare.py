@@ -20,17 +20,19 @@ VALIDATORS_MESSAGE = {
 TRIP_DURATION_ASTYPE = 'timedelta64[m]'
 TRIP_DURATION_TIME_UNIT = 'mins'
 PAGE_SIZE = 5
+MONTH_FORMAT = '%B'
+DAY_OF_WEEK_FORMAT = '%A'
 
 def convert_month(month):
     try:
-        converted_month = time.strptime(month, '%B').tm_mon
+        converted_month = time.strptime(month, MONTH_FORMAT).tm_mon
         return converted_month
     except:
         return ''
 
 def convert_day_of_week(day):
     try:
-        converted_day_of_week = time.strptime(day, '%A').tm_wday
+        converted_day_of_week = time.strptime(day, DAY_OF_WEEK_FORMAT).tm_wday
         return converted_day_of_week
     except:
         return ''
