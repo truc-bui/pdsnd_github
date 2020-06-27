@@ -85,6 +85,14 @@ def getFileNameByCity(city):
             traceback.print_exc(file=sys.stdout)
         return False
 
+def getCsvData(filename):
+    try:
+        return pd.read_csv(filename)
+    except:
+        if DEBUG:
+            traceback.print_exc(file=sys.stdout)
+        return None
+
 def get_filters():
     """
     Asks user to specify a city, month, and day to analyze.
@@ -160,7 +168,7 @@ def load_data(city, month, day):
         filename = getFileNameByCity(city)
         if filename:
             # load data file into a dataframe
-            df = pd.read_csv(filename)
+            df = getCsvData(filename)
             # convert the Start Time column to datetime
             if is_column_valid(df, 'Start Time'):
                 df['Start Time'] = pd.to_datetime(df['Start Time'])
