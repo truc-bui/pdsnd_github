@@ -28,6 +28,7 @@ INPUT_CITY_PROMPT = "Would you like to see data for Chicago, New York, or Washin
 FILTER_BY_PROMPT = "Would you like to filter the data by month, day, or not at all? Please enter 'month' or 'day' or 'not at all' or any other character(s) for no filter: "
 MONTH_INPUT_PROMPT = 'Which month - January, February, March, April, May, or June? '
 DAY_INPUT_PROMPT = 'Which day - Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, or Sunday? '
+RESTART_PROMPT = '\nWould you like to restart? Enter yes or no.\n'
 
 def convert_month(month):
     try:
@@ -317,7 +318,7 @@ def main():
                     user_stats(df)
                     handle_display_raw_data(df)
 
-            restart = input('\nWould you like to restart? Enter yes or no.\n')
+            restart = input(RESTART_PROMPT)
             if restart.lower() != 'yes':
                 break
     except:
