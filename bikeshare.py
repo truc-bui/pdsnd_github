@@ -76,6 +76,15 @@ def print_most_popular_value_by_column(df, column_name, print_context):
         if DEBUG:
             traceback.print_exc(file=sys.stdout)
 
+def getFileNameByCity(city):
+    try:
+        filename = CITY_DATA.get(city.lower())
+        return filename
+    except:
+        if DEBUG:
+            traceback.print_exc(file=sys.stdout)
+        return False
+
 def get_filters():
     """
     Asks user to specify a city, month, and day to analyze.
@@ -148,7 +157,7 @@ def load_data(city, month, day):
     """
     df = ''
     try:
-        filename = CITY_DATA.get(city.lower())
+        filename = getFileNameByCity(city)
         if filename:
             # load data file into a dataframe
             df = pd.read_csv(filename)
